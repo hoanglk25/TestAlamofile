@@ -10,7 +10,13 @@ import Alamofire
 import SwiftyJSON
 import Kingfisher
 
+protocol SendData {
+    func sendData(result: Result)
+}
+
 class ViewController: UIViewController {
+    
+    var delegate: SendData?
     
     var fetchData = [Result]()
     
@@ -20,12 +26,14 @@ class ViewController: UIViewController {
         return tableView
     }()
     
+    var handelBack: ((Result) -> Void)?
+    
     let searchController = UISearchController()
     override func viewDidLoad() {
         super.viewDidLoad()
         
         navigationItem.searchController = searchController
-        searchController.searchBar.placeholder = "Enter Country Code e.g. US"
+        searchController.searchBar.placeholder = "Enter Name Movie"
         searchController.searchBar.delegate = self
 
         setUpTableView()
@@ -51,16 +59,12 @@ class ViewController: UIViewController {
         tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0).isActive = true
     }
     
-    var handelBack:((Result) -> Void)?
+ 
 }
 
 extension ViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let vc = DetailViewController()
-//        vc.modalPresentationStyle = .overFullScreen
-//        vc.modalTransitionStyle = .crossDissolve
-        handelBack?(fetchData[indexPath.row])
-//        present(vc, animated: true)
+        let vc = DetailViewController(detailData: fetchData[indexPath.row])
         navigationController?.pushViewController(vc, animated: true)
        
     }
